@@ -1,6 +1,8 @@
 # llm-fullstack-training
 
 ## Project Overview
+Users submit text, the API does things to it — summarize, classify, extract keywords, detect sentiment, answer questions about it. Simple, very modular, each route is independent.
+
 This repository contains the foundation for a production-structured AI Text Processing REST API built with FastAPI and LLM. The architecture follows a strict N-Layered pattern to enforce separation of concerns. 
 
 You are required to build the concrete implementations for your assigned feature slice. You will not build this as a monolithic script; you will integrate your logic into the existing pipeline.
@@ -97,4 +99,4 @@ Execute these exact commands to configure your local development environment.
   ```bash
   uvicorn app.main:app --reload
   ```
-  Access the Swagger UI at [http://127.0.0.1:8000/docs](localhost:8000/docs) to test your endpoints.
+  Access the Swagger UI at [localhost:8000/docs](http://127.0.0.1:8000/docs) to test your endpoints.
