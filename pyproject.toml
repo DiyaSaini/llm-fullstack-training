@@ -61,8 +61,3 @@ module = ["tests.*", "scripts.*"]
 disallow_untyped_defs = false
 warn_return_any = false
 warn_unused_ignores = false
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-asyncio_mode = "auto"
-addopts = "-v --tb=short"
