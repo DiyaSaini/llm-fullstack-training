@@ -17,7 +17,7 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         case_sensitive=False,
     )
-    llm_api_key: str
+    llm_api_key: str = ""
     app_env: str = "development"
     log_level: str = "INFO"
     app_title: str = "AI Text Processing API"
@@ -25,6 +25,5 @@ class Settings(BaseSettings):
 
 
 # Module-level singleton — import this everywhere.
-# # type: ignore comment is intentional — pydantic-settings populates
-# # llm_api_key from the environment at runtime, mypy cannot see this.
-# settings = Settings()  # type: ignore[call-arg]
+# # llm_api_key is populated from the environment at runtime by pydantic-settings.
+settings: Settings = Settings()
