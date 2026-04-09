@@ -36,7 +36,18 @@ jobs:
       - name: Run Bandit (Security Scan)
         run: uv run bandit -c pyproject.toml -r app
 
-      - name: Run Pytest (Unit Tests)
+      - name: Run Pytest (Feature Tests)
         env:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
-        run: uv run pytest tests/
+        run: |
+          BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          case "$BRANCH" in
+            feature/summarize)  uv run pytest tests/test_summarize.py -v --tb=short ;;
+            feature/classify)   uv run pytest tests/test_classify.py -v --tb=short ;;
+            feature/keywords)   uv run pytest tests/test_keywords.py -v --tb=short ;;
+            feature/sentiment)  uv run pytest tests/test_sentiment.py -v --tb=short ;;
+            feature/qa)         uv run pytest tests/test_qa.py -v --tb=short ;;
+            feature/paraphrase) uv run pytest tests/test_paraphrase.py -v --tb=short ;;
+            feature/translate)  uv run pytest tests/test_translate.py -v --tb=short ;;
+            *)                  uv run pytest tests/ --cov=app --cov-report=term-missing --cov-fail-under=70 ;;
+          esac
