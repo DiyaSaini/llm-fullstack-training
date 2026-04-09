@@ -25,4 +25,6 @@ class Settings(BaseSettings):
 
 
 # Module-level singleton — import this everywhere.
-settings = Settings()
+# # type: ignore comment is intentional — pydantic-settings populates
+# # llm_api_key from the environment at runtime, mypy cannot see this.
+# settings = Settings()  # type: ignore[call-arg]
