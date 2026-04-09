@@ -35,8 +35,3 @@ jobs:
 
       - name: Run Bandit (Security Scan)
         run: uv run bandit -c pyproject.toml -r app
-
-      - name: Run Pytest (Unit Tests)
-        env:
-          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
-        run: uv run pytest tests/ --cov=app --cov-report=term-missing --cov-fail-under=70

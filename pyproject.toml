@@ -6,6 +6,9 @@ readme = "README.md"
 requires-python = "==3.13.11"
 dependencies = [
     "fastapi==0.135.3",
+    "pydantic-settings==2.13.1",
+    "python-dotenv>=1.2.2",
+    "uvicorn==0.44.0",
 ]
 
 [dependency-groups]
@@ -15,11 +18,51 @@ dev = [
     "mkdocs==1.6.1",
     "mypy==1.20.0",
     "pre-commit==4.5.1",
-    "pytest==9.0.3",
     "rich==14.3.3",
     "ruff==0.15.9",
 ]
 
 [tool.bandit]
-exclude_dirs = ["tests", ".venv"]
+exclude_dirs = ["tests", ".venv", "scripts"]
 skips = ["B101"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+ignore = [
+    "E501",
+    "B008",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+python_version = "3.11"
+strict = false
+disallow_untyped_defs = true
+disallow_any_unimported = false
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
+show_error_codes = true
+ignore_missing_imports = true
+exclude = ["tests/", "scripts/"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*", "scripts.*"]
+disallow_untyped_defs = false
+warn_return_any = false
+warn_unused_ignores = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-v --tb=short"

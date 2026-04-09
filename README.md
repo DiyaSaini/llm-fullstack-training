@@ -3,12 +3,12 @@
 ## Project Overview
 Users submit text, the API does things to it — summarize, classify, extract keywords, detect sentiment, answer questions about it. Simple, very modular, each route is independent.
 
-This repository contains the foundation for a production-structured AI Text Processing REST API built with FastAPI and LLM. The architecture follows a strict N-Layered pattern to enforce separation of concerns. 
+This repository contains the foundation for a production-structured AI Text Processing REST API built with FastAPI and LLM. The architecture follows a strict N-Layered pattern to enforce separation of concerns.
 
 You are required to build the concrete implementations for your assigned feature slice. You will not build this as a monolithic script; you will integrate your logic into the existing pipeline.
 
 ## Architecture & Boundaries
-The system is divided into layers. Data flows top-down. 
+The system is divided into layers. Data flows top-down.
 
 HTTP Request -> Router -> Controller -> Pipeline -> Interface -> Service -> LLM Provider -> HTTP Response
 
@@ -40,7 +40,7 @@ You are responsible for one vertical slice. Find your assignment below.
 | Translate  | `feature/translate`  | `POST /api/v1/translate`  |
 
 ## Local Setup
-Execute these exact commands to configure your local development environment. 
+Execute these exact commands to configure your local development environment.
 
 1. **Clone the repository:**
    ```bash
@@ -51,15 +51,15 @@ Execute these exact commands to configure your local development environment.
 2. **Configure the environment (assuming standard virtual environment):**
 
    If not using uv
-   
+
     ```bash
     python -m venv .venv
     source .venv/bin/activate # Windows : .venv\Scripts\activate
     pip install -r requirements.txt
     ```
-  
+
     With uv
-  
+
     ```bash
     uv sync
     ```
@@ -71,9 +71,9 @@ Execute these exact commands to configure your local development environment.
     ```bash
     pre-commit install
     ```
-  
+
     Note: This repository enforces strict code quality. The pre-commit hooks will automatically run Ruff (linting/ formatting), Mypy (type checking), and Bandit (security scanning) every time you attempt to commit. If your code fails these checks, the commit will be blocked locally. You must fix the errors before pushing.
-  
+
 4. **Environment Variables:**
     ```bash
     cp .env.example .env
