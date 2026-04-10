@@ -48,26 +48,22 @@ def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
 
-    # ── Initialise provider and pipeline ──────────────────────────────────────
     provider = GeminiProvider(model="gemini-2.0-flash", api_key=settings.llm_api_key)
     pipeline = SentimentPipeline(service=SentimentService(provider=provider))
 
-    # ── Build request ─────────────────────────────────────────────────────────
     request = SentimentRequest(text=args.text)
 
-    # ── Execute ───────────────────────────────────────────────────────────────
-    print("\n⏳ Running sentiment pipeline...")
+    print("\nRunning sentiment pipeline...")
     try:
         result = pipeline.execute(request)
     except ValueError as e:
-        print(f"\n❌ Validation error: {e}", file=sys.stderr)
+        print(f"\nValidation error: {e}", file=sys.stderr)
         sys.exit(1)
     except LLMProviderError as e:
-        print(f"\n❌ LLM provider error: {e}", file=sys.stderr)
+        print(f"\nLLM provider error: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # ── Print result ──────────────────────────────────────────────────────────
-    print("\n✅ Done!")
+    print("\nDone!")
     print(f"\nSentiment:  {result.sentiment}")
     print(
         f"Score:      {result.score:.2f}  (-1.0 = very negative, 1.0 = very positive)"
