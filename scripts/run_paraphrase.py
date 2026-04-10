@@ -54,28 +54,23 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
-
-    # ── Initialise provider and pipeline ──────────────────────────────────────
     provider = GeminiProvider(model="gemini-2.0-flash", api_key=settings.llm_api_key)
     pipeline = ParaphrasePipeline(service=ParaphraseService(provider=provider))
 
-    # ── Build request ─────────────────────────────────────────────────────────
     tones = [t.strip() for t in args.tones.split(",")]
     request = ParaphraseRequest(text=args.text, tones=tones)
 
-    # ── Execute ───────────────────────────────────────────────────────────────
-    print("\n⏳ Running paraphrase pipeline...")
+    print("\nRunning paraphrase pipeline...")
     try:
         result = pipeline.execute(request)
     except ValueError as e:
-        print(f"\n❌ Validation error: {e}", file=sys.stderr)
+        print(f"\nValidation error: {e}", file=sys.stderr)
         sys.exit(1)
     except LLMProviderError as e:
-        print(f"\n❌ LLM provider error: {e}", file=sys.stderr)
+        print(f"\nLLM provider error: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # ── Print result ──────────────────────────────────────────────────────────
-    print("\n✅ Done!")
+    print("\nDone!")
     print("\nParaphrases:")
     for variant in result.paraphrases:
         print(f"\n  [{variant.tone.upper()}]")

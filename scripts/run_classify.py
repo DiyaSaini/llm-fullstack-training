@@ -54,29 +54,25 @@ def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
 
-    # ── Initialise provider and pipeline ──────────────────────────────────────
     provider = GeminiProvider(model="gemini-2.0-flash", api_key=settings.llm_api_key)
     pipeline = ClassifyPipeline(service=ClassifyService(provider=provider))
 
-    # ── Build request ─────────────────────────────────────────────────────────
     categories = (
         [c.strip() for c in args.categories.split(",")] if args.categories else None
     )
     request = ClassifyRequest(text=args.text, categories=categories)
 
-    # ── Execute ───────────────────────────────────────────────────────────────
-    print("\n⏳ Running classify pipeline...")
+    print("\nRunning classify pipeline...")
     try:
         result = pipeline.execute(request)
     except ValueError as e:
-        print(f"\n❌ Validation error: {e}", file=sys.stderr)
+        print(f"\nValidation error: {e}", file=sys.stderr)
         sys.exit(1)
     except LLMProviderError as e:
-        print(f"\n❌ LLM provider error: {e}", file=sys.stderr)
+        print(f"\nLLM provider error: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # ── Print result ──────────────────────────────────────────────────────────
-    print("\n✅ Done!")
+    print("\nDone!")
     print(f"\nCategory:    {result.category}")
     print(f"Confidence:  {result.confidence:.2f}")
     print(f"Reasoning:   {result.reasoning}")
