@@ -153,10 +153,10 @@ Get your API key: https://aistudio.google.com/app/apikey
 
 ```bash
 # pip
-pip install google-generativeai
+pip install google-genai
 
 # uv
-uv add google-generativeai
+uv add google-genai
 ```
 
 You will implement `GeminiProvider` in `app/providers/llm_provider.py`. Choose any model available on your key. Recommended free-tier options:
