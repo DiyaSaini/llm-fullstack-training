@@ -20,21 +20,9 @@ class KeywordsPipeline(BasePipeline):
         self.service = service
 
     def execute(self, request: KeywordsRequest) -> KeywordsResponse:
-        """
-        Run the keyword extraction pipeline.
-
-        Steps:
-            1. Validate and normalise the incoming request
-            2. Build the LLM prompt from validated input
-            3. Call the LLM provider and get the raw response
-            4. Parse the raw response into a structured KeywordsResponse
-
-        Args:
-            request: Validated KeywordsRequest from the controller.
-
-        Returns:
-            KeywordsResponse with a ranked list of keywords and relevance scores.
-        """
+        
+        # Executes the full keyword extraction flow
+        
         logger.info("KeywordsPipeline: starting execution")
 
         validated = self.service.validate_input(request)
