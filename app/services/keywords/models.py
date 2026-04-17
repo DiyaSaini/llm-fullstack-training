@@ -10,13 +10,9 @@ from dataclasses import dataclass
 
 @dataclass
 class KeywordsInput:
-    """
-    Validated, normalised input ready for prompt construction.
-
-    TODO (Associate 3):
-        Populate this from validate_input() in your service.
-        Add or remove fields as your implementation requires.
-    """
-
+    
+    #Populated KeywordsInput in validate_input() and validated max_keywords. 
+    #Added defensive checks to ensure input integrity before prompt construction.
+    
     text: str
     max_keywords: int = 10
