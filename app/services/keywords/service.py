@@ -14,8 +14,10 @@ Steps to get started:
     8. Run your script: python scripts/run_keywords.py --text "Your text here"
 """
 
+import json
+
 from app.api.v1.schemas.requests.keywords import KeywordsRequest
-from app.api.v1.schemas.responses.keywords import KeywordsResponse
+from app.api.v1.schemas.responses.keywords import Keyword, KeywordsResponse
 from app.core.interfaces.keywords_interface import KeywordsServiceInterface
 from app.logging import get_logger
 from app.providers.llm_provider import BaseLLMProvider
@@ -34,7 +36,6 @@ class KeywordsService(KeywordsServiceInterface):
         """
         Validate and normalise the keywords request.
 
-        TODO:
             - Strip whitespace from text
             - Raise ValueError if text is empty after stripping
             - Ensure max_keywords is between 1 and 20 (it is validated by Pydantic,
@@ -50,13 +51,20 @@ class KeywordsService(KeywordsServiceInterface):
         Raises:
             ValueError: If text is empty or max_keywords is out of range.
         """
-        raise NotImplementedError
+
+        text = request.text.strip()
+        if not text:
+            raise ValueError("Text cannot be empty")
+
+        if not 1 <= request.max_keywords <= 20:
+            raise ValueError("max_keywords must be between 1 and 20")
+
+        return KeywordsInput(text=text, max_keywords=request.max_keywords)
 
     def build_prompt(self, validated_input: KeywordsInput) -> str:
         """
         Construct the keyword extraction prompt.
 
-        TODO:
             - Instruct the LLM to extract up to max_keywords keywords
             - Ask for keywords ordered by relevance score descending
             - Instruct LLM to respond ONLY with valid JSON, no markdown fences
@@ -69,13 +77,33 @@ class KeywordsService(KeywordsServiceInterface):
         Returns:
             Fully constructed prompt string.
         """
-        raise NotImplementedError
+        return f"""
+        Extract up to {validated_input.max_keywords} keywords or key phrases from the text below.
+
+        Requirements:
+            - Rank them by relevance in descending order
+            - Return ONLY valid JSON
+            - Do NOT include markdown fences
+            - Do NOT include explanations
+
+            Use EXACTLY this JSON format:
+            {{
+            "keywords": [
+                {{
+                "word": "keyword here",
+                "relevance_score": 0.95
+                }}
+            ]
+            }}
+
+            Text:
+            {validated_input.text}
+            """
 
     def parse_response(self, raw_response: str) -> KeywordsResponse:
         """
         Parse the raw LLM JSON response into a KeywordsResponse.
 
-        TODO:
             - Strip any accidental markdown fences if present
             - Parse the string as JSON
             - Construct Keyword objects from the list
@@ -91,4 +119,27 @@ class KeywordsService(KeywordsServiceInterface):
         Raises:
             ValueError: If the response is not valid JSON or keywords are missing.
         """
-        raise NotImplementedError
+        try:
+            cleaned = raw_response.strip()
+
+            if cleaned.startswith("```json"):
+                cleaned = cleaned.removeprefix("```json").removesuffix("```").strip()
+            elif cleaned.startswith("```"):
+                cleaned = cleaned.removeprefix("```").removesuffix("```").strip()
+
+            data = json.loads(cleaned)
+
+            keywords_data = data.get("keywords")
+
+            if not keywords_data:
+                raise ValueError("No keywords found in response")
+
+            keywords = [
+                Keyword(word=item["word"], relevance_score=item["relevance_score"])
+                for item in keywords_data
+            ]
+
+            return KeywordsResponse(keywords=keywords)
+
+        except Exception as e:
+            raise ValueError("Invalid LLM response format") from e

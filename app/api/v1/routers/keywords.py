@@ -10,6 +10,7 @@ No business logic lives here.
 
 from fastapi import APIRouter, Depends, status
 
+from app.api.v1.controllers.keywords_controller import KeywordsController
 from app.api.v1.deps import get_keywords_pipeline
 from app.api.v1.schemas.requests.keywords import KeywordsRequest
 from app.api.v1.schemas.responses.keywords import KeywordsResponse
@@ -36,4 +37,6 @@ async def keywords(
         - Return the result
         - Let HTTPException propagate naturally — do not catch it here
     """
-    raise NotImplementedError
+    controller = KeywordsController(pipeline=pipeline)
+    result = controller.handle(request)
+    return result

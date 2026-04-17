@@ -5,7 +5,7 @@ TODO (Associate 3):
     - Add field validators if needed
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class KeywordsRequest(BaseModel):
@@ -25,3 +25,10 @@ class KeywordsRequest(BaseModel):
         le=20,
         description="Maximum number of keywords to return. Defaults to 10.",
     )
+
+    @field_validator("text")
+    @classmethod
+    def validate_text(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("Text cannot be empty")
+        return value

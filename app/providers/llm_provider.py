@@ -12,6 +12,8 @@ To add a new provider (e.g. OpenAI):
 
 from abc import ABC, abstractmethod
 
+import google.generativeai as genai
+
 from app.logging import get_logger
 
 logger = get_logger(__name__)
@@ -84,7 +86,10 @@ class GeminiProvider(BaseLLMProvider):
             - Store self.model = model
             - Instantiate the GenerativeModel and store as self._client
         """
-        raise NotImplementedError
+        genai.configure(api_key=api_key)
+
+        self.model = model
+        self._client = genai.GenerativeModel(model)
 
     def generate(self, prompt: str) -> str:
         """
@@ -105,4 +110,18 @@ class GeminiProvider(BaseLLMProvider):
             - Wrap exceptions in LLMProviderError
             - Log the call at DEBUG level (never log the full prompt in production)
         """
-        raise NotImplementedError
+        try:
+            logger.debug("Calling Gemini provider")
+
+            response = self._client.generate_content(prompt)
+            text = response.text
+
+            if not isinstance(text, str):
+                raise LLMProviderError("Gemini returned a non-text response")
+
+            return text
+
+        except Exception as e:
+            logger.exception("Gemini API call failed")
+
+            raise LLMProviderError("Failed to generate response from Gemini") from e
